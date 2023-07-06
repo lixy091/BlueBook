@@ -73,6 +73,7 @@ public class UserLoginServiceImpl implements UserLoginService {
         String token = RandomUtil.randomString(30);
         UserDTO userDTO = new UserDTO(user);
         redisTemplate.opsForHash().putAll(USER_INFO+token,userDTO.transMap());
+        redisTemplate.expire(USER_INFO+token,2,TimeUnit.HOURS);
         //返回一个token给客户端
         responseData = ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage());
         responseData.setData(token);

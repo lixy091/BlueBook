@@ -31,7 +31,7 @@ public class UserLoginController {
     }
 
     @ApiOperation(value = "登录或注册(初次登录)",notes = "登录或注册(初次登录)")
-    @PostMapping("login")
+    @PostMapping("lore")
     public ResponseData login(
             @ApiParam(value = "用户电话号码",name = "phone", required = true)
             @RequestParam("phone") String phoneNumber,

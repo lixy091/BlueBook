@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static com.lixy.bluebook.Utils.ProjectConstant.USER_INFO;
 
@@ -40,7 +41,7 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
         //保存到ThreadLocal
         UserLocal.setUserDTO(new UserDTO(user));
         //刷新token有效期
-
+        stringRedisTemplate.expire(USER_INFO+token,2, TimeUnit.HOURS);
         //放行
         return true;
     }
@@ -52,6 +53,6 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
+        UserLocal.removeUserDTO();
     }
 }
