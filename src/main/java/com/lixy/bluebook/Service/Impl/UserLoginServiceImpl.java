@@ -1,6 +1,7 @@
 package com.lixy.bluebook.Service.Impl;
 
 import cn.hutool.core.util.RandomUtil;
+import com.lixy.bluebook.DTO.UserDTO;
 import com.lixy.bluebook.Dao.UserLoginMapper;
 import com.lixy.bluebook.Entity.User;
 import com.lixy.bluebook.Service.UserLoginService;
@@ -14,6 +15,7 @@ import javax.annotation.Resource;
 import java.util.concurrent.TimeUnit;
 
 import static com.lixy.bluebook.Utils.ProjectConstant.LOGIN_PHONE;
+import static com.lixy.bluebook.Utils.ProjectConstant.USER_INFO;
 import static com.lixy.bluebook.Utils.RegexPatterns.PHONE_REGEX;
 
 
@@ -61,12 +63,19 @@ public class UserLoginServiceImpl implements UserLoginService {
             return responseData;
         }
         //根据手机查询用户
-
+        User user = userLoginMapper.getUserByPhone(phoneNumber);
         //判断用户是否存在,不存在则保存用户信息至数据库
-
+        if (user == null){
+            user = new User(phoneNumber);
+            userLoginMapper.saveUser(user);
+        }
         //将用户信息保存至Redis
-
+        String token = RandomUtil.randomString(30);
+        UserDTO userDTO = new UserDTO(user);
+        redisTemplate.opsForHash().putAll(USER_INFO+token,userDTO.transMap());
         //返回一个token给客户端
+        responseData = ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage());
+        responseData.setData(token);
         return responseData;
     }
 }

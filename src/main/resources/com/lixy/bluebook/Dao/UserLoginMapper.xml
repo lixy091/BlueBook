@@ -23,4 +23,7 @@
          #{updateTime}
         )
     </insert>
+    <select id="getUserByPhone" resultType="com.lixy.bluebook.Entity.User">
+        select * from tb_user where phone = #{phone}
+    </select>
 </mapper>

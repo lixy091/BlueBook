@@ -10,4 +10,6 @@ import java.util.Map;
 public interface UserLoginMapper {
 
     long saveUser(User user);
+
+    User getUserByPhone(String phone);
 }

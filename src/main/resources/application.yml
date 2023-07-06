@@ -14,7 +14,7 @@ spring:
         max-wait: -1
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/redis?useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://42.203.52.207:64428/bluebook?useSSL=false&serverTimezone=UTC
     username: root
     password: admin123
   mvc:
@@ -23,5 +23,7 @@ spring:
 
 mybatis:
   type-aliases-package: com.lixy.bluebook.Entity
+  configuration:
+    map-underscore-to-camel-case: true
 
 
