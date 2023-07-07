@@ -15,7 +15,13 @@ public class InterceptorConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new RefreshTokenInterceptor()).addPathPatterns("/**");
-        registry.addInterceptor(new UserInterceptor()).excludePathPatterns("/login/sendCode"
-                ,"/login/lore");
+        registry.addInterceptor(new UserInterceptor()).excludePathPatterns(
+                "/login/sendCode/**"
+                ,"/login/lore"
+                ,"/swagger-ui.html"
+                ,"/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**"
+                ,"/doc.html/**","/error","/favicon.ico"
+
+        );
     }
 }

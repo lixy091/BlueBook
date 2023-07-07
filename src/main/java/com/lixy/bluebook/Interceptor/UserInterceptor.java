@@ -15,7 +15,8 @@ public class UserInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (UserLocal.getUserDTO() == null){
-            response.sendError(500, ExceptionEnums.TOKEN_FAILURE.getMessage());
+            response.setStatus(401);
+            response.getWriter().write(ExceptionEnums.TOKEN_FAILURE.getMessage());
             return false;
         }
         return true;
