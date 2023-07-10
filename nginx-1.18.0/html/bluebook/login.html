@@ -59,7 +59,9 @@
   <script src="./js/element.js"></script>
   <script src="./js/common.js"></script>
   <script src="./js/footer.js"></script>
+  <script src="https://cdn.bootcss.com/qs/6.5.1/qs.min.js"></script>
   <script>
+    // Vue.use(Qs)
 
     const app = new Vue({
       el: "#app",
@@ -80,6 +82,7 @@
             this.$message.error("手机号和验证码不能为空！");
             return
           }
+          this.form = Qs.stringify(this.form)
           axios.post("/login/lore", this.form)
             .then(({ data }) => {
               if (data) {
@@ -87,7 +90,7 @@
                 sessionStorage.setItem("token", data);
               }
               // 跳转到首页
-              location.href = "/index.html"
+              location.href = "/info.html"
             })
             .catch(err => this.$message.error(err))
         },

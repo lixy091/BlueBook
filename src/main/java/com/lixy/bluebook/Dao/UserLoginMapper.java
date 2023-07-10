@@ -14,4 +14,5 @@ public interface UserLoginMapper {
     long saveUser(User user);
 
     User getUserByPhone(String phone);
+
 }

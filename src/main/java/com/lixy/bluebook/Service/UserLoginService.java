@@ -7,4 +7,6 @@ public interface UserLoginService {
     ResponseData sendCode(String phoneNumber);
 
     ResponseData login(String phoneNumber, String verifyCode);
+
+    ResponseData loginByPassword(String phoneNumber , String password);
 }

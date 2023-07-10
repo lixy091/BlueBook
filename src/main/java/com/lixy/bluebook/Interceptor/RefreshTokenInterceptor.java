@@ -22,8 +22,12 @@ import static com.lixy.bluebook.Utils.ProjectConstant.USER_INFO;
  */
 public class RefreshTokenInterceptor implements HandlerInterceptor {
 
-    @Resource
+
     private StringRedisTemplate stringRedisTemplate;
+
+    public RefreshTokenInterceptor(StringRedisTemplate stringRedisTemplate) {
+        this.stringRedisTemplate = stringRedisTemplate;
+    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -41,7 +45,7 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
         //保存到ThreadLocal
         UserLocal.setUserDTO(new UserDTO(user));
         //刷新token有效期
-        stringRedisTemplate.expire(USER_INFO+token,2, TimeUnit.HOURS);
+        stringRedisTemplate.expire(USER_INFO+token,30, TimeUnit.MINUTES);
         //放行
         return true;
     }

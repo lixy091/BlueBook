@@ -7,7 +7,7 @@ axios.defaults.timeout = 2000;
 let token = sessionStorage.getItem("token");
 axios.interceptors.request.use(
   config => {
-    if(token) config.headers['authorization'] = token
+    if(token) config.headers['Authorization'] = token
     return config
   },
   error => {
@@ -17,8 +17,8 @@ axios.interceptors.request.use(
 )
 axios.interceptors.response.use(function (response) {
   // 判断执行结果
-  if (!response.data.success) {
-    return Promise.reject(response.data.errorMsg)
+  if (response.data.status != 'success') {
+    return Promise.reject(response.data.message)
   }
   return response.data;
 }, function (error) {

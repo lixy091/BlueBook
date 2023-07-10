@@ -6,6 +6,7 @@ import com.lixy.bluebook.Dao.UserLoginMapper;
 import com.lixy.bluebook.Entity.User;
 import com.lixy.bluebook.Service.UserLoginService;
 import com.lixy.bluebook.Utils.ExceptionEnums;
+import com.lixy.bluebook.Utils.RedisUtils;
 import com.lixy.bluebook.Utils.ResponseData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -33,6 +34,9 @@ public class UserLoginServiceImpl implements UserLoginService {
 
     @Resource
     private UserLoginMapper userLoginMapper;
+
+    @Resource
+    private RedisUtils redisUtils;
 
     @Override
     public ResponseData sendCode(String phoneNumber) {
@@ -70,13 +74,29 @@ public class UserLoginServiceImpl implements UserLoginService {
             userLoginMapper.saveUser(user);
         }
         //将用户信息保存至Redis
-        String token = RandomUtil.randomString(30);
-        UserDTO userDTO = new UserDTO(user);
-        redisTemplate.opsForHash().putAll(USER_INFO+token,userDTO.transMap());
-        redisTemplate.expire(USER_INFO+token,2,TimeUnit.HOURS);
+        String token = redisUtils.getTokenByUser(user);
         //返回一个token给客户端
         responseData = ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage());
         responseData.setData(token);
         return responseData;
+    }
+
+    @Override
+    public ResponseData loginByPassword(String phoneNumber, String password) {
+        ResponseData data = null;
+        User user = userLoginMapper.getUserByPhone(phoneNumber);
+        if (user == null){
+            data = ResponseData.getInstance(ExceptionEnums.FAILURE.getCode(), ExceptionEnums.FAILURE.getMessage()+"该用户不存在");
+            return data;
+        }
+        else if (!user.getPassword().equals(password)){
+            data = ResponseData.getInstance(ExceptionEnums.FAILURE.getCode(), ExceptionEnums.FAILURE.getMessage()+"密码错误请重试");
+            return data;
+        }
+        String token = redisUtils.getTokenByUser(user);
+        //返回一个token给客户端
+        data = ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage());
+        data.setData(token);
+        return data;
     }
 }

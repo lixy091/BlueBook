@@ -25,5 +25,12 @@ mybatis:
   type-aliases-package: com.lixy.bluebook.Entity
   configuration:
     map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.log4j2.Log4j2Impl
 
-
+logging:
+  group:
+    server: com.lixy.bluebook.Controller, com.lixy.bluebook.Service
+    sql: com.lixy.bluebook.Dao
+  level:
+    root: info
+    sql: debug
