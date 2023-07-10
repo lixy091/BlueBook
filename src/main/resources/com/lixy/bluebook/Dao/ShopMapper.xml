@@ -5,4 +5,24 @@
     <select id="getShopById" resultType="com.lixy.bluebook.Entity.Shop">
         select * from tb_shop where id = #{id}
     </select>
+
+    <update id="updateShop">
+        update tb_shop
+        set
+            name = #{shop.name},
+            type_id = #{shop.typeId},
+            images = #{shop.images},
+            area = #{shop.area},
+            address = #{shop.address},
+            x = #{shop.x},
+            y = #{shop.y},
+            avg_price = #{shop.avgPrice},
+            sold = #{shop.sold},
+            comments = #{shop.comments},
+            score = #{shop.score},
+            open_hours = #{shop.openHours},
+            update_time = #{shop.updateTime}
+        where id = #{shop.id}
+    </update>
+
 </mapper>

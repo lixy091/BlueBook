@@ -9,4 +9,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ShopMapper {
     Shop getShopById(Long id);
+
+    long updateShop(Shop shop);
 }

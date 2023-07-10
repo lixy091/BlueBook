@@ -1,14 +1,12 @@
 package com.lixy.bluebook.Controller;
 
+import com.lixy.bluebook.Entity.Shop;
 import com.lixy.bluebook.Service.ShopService;
 import com.lixy.bluebook.Utils.ResponseData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -30,4 +28,14 @@ public class ShopController {
     ){
         return shopService.getShopById(id);
     }
+
+    @ApiOperation("修改商铺信息")
+    @PutMapping("updateShop")
+    public ResponseData updateShop(
+            @ApiParam(value = "商铺详情" , name = "shop", required = true)
+            @RequestBody Shop shop
+    ){
+        return shopService.updateShop(shop);
+    }
+
 }

@@ -55,4 +55,21 @@ public class ShopServiceImpl implements ShopService {
         data.setData(shop);
         return data;
     }
+
+    @Override
+    public ResponseData updateShop(Shop shop) {
+        ResponseData data;
+        //更新数据库
+        if (shopMapper.updateShop(shop) == 0){
+            //商铺不存在返回错误信息
+            data = ResponseData.getInstance(ExceptionEnums.FAILURE.getCode(), ExceptionEnums.FAILURE.getMessage()+"商铺不存在");
+            return data;
+        }
+        //将Redis缓存删除
+        stringRedisTemplate.delete(CACHE_SHOP+shop.getId());
+        //返回信息
+        data = ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage());
+        data.setData(1);
+        return data;
+    }
 }
