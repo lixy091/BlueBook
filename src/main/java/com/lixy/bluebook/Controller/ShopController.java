@@ -38,4 +38,13 @@ public class ShopController {
         return shopService.updateShop(shop);
     }
 
+    @ApiOperation("添加热点数据至Redis")
+    @PostMapping("addHot")
+    public ResponseData addHotShop(
+            @ApiParam(value = "商店id", name = "id" , required = true)
+            @RequestParam("id") Long id
+    ){
+        return shopService.addHotShop(id);
+    }
+
 }

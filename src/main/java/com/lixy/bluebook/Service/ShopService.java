@@ -11,4 +11,6 @@ public interface ShopService {
     ResponseData getShopById(Long id);
 
     ResponseData updateShop(Shop shop);
+
+    ResponseData addHotShop(Long id);
 }

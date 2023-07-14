@@ -30,7 +30,7 @@ public class RedisUtils {
 
     private final StringRedisTemplate stringRedisTemplate;
 
-    private ThreadPoolExecutor threadPool = new ThreadPoolExecutor(8,10,50,TimeUnit.MILLISECONDS,new ArrayBlockingQueue<>(3),new ThreadPoolExecutor.DiscardOldestPolicy());
+    private final ThreadPoolExecutor threadPool = new ThreadPoolExecutor(8,10,50,TimeUnit.MILLISECONDS,new ArrayBlockingQueue<>(3),new ThreadPoolExecutor.DiscardOldestPolicy());
 
     public RedisUtils(StringRedisTemplate stringRedisTemplate) {
         this.stringRedisTemplate = stringRedisTemplate;

@@ -17,7 +17,7 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
-import static com.lixy.bluebook.Utils.ProjectConstant.CACHE_SHOP;
+import static com.lixy.bluebook.Utils.ProjectConstant.*;
 
 /**
  * @author lixy
@@ -33,25 +33,8 @@ public class ShopServiceImpl implements ShopService {
     @Override
     public ResponseData getShopById(Long id) {
         ResponseData data;
-//        //从Redis中查询商铺信息
-//        String shopJson = stringRedisTemplate.opsForValue().get(CACHE_SHOP+id);
-//        //若查到直接返回
-//        if (!StrUtil.isBlank(shopJson)){
-//            Shop shop = BeanUtil.toBean(shopJson, Shop.class);
-//            data = ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage());
-//            data.setData(shop);
-//        }
-//        //未查到则查询数据库
-//        Shop shop = shopMapper.getShopById(id);
-//        //数据库中也不存在则返回查询失败并将null存入Redis中
-//        if (shop == null){
-//            redisUtils.set(CACHE_SHOP+id,"", 2L, TimeUnit.MINUTES);
-//            data = ResponseData.getInstance(ExceptionEnums.FAILURE.getCode(), ExceptionEnums.FAILURE.getMessage()+"商铺不存在");
-//            return data;
-//        }
-//        //查到则将查询到的商铺信息保存至redis
-//        redisUtils.set(CACHE_SHOP+id,shop,30L,TimeUnit.MINUTES);
-        Shop shop = redisUtils.getBeanFromRedis(CACHE_SHOP+id,id, Shop.class,shopMapper::getShopById);
+//        Shop shop = redisUtils.getBeanFromRedis(CACHE_SHOP+id,id, Shop.class,shopMapper::getShopById);
+        Shop shop = redisUtils.getLogicBeanFromRedis(CACHE_LOGIC+id,id, Shop.class,shopMapper::getShopById);
         if (shop == null){
             data = ResponseData.getInstance(ExceptionEnums.FAILURE.getCode(), ExceptionEnums.FAILURE.getMessage()+"商铺不存在");
             return data;
@@ -77,6 +60,19 @@ public class ShopServiceImpl implements ShopService {
         //返回信息
         data = ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage());
         data.setData(1);
+        return data;
+    }
+
+    @Override
+    public ResponseData addHotShop(Long id) {
+        ResponseData data;
+        Shop shop = shopMapper.getShopById(id);
+        if (shop == null){
+            data = ResponseData.getInstance(ExceptionEnums.FAILURE.getCode(), ExceptionEnums.FAILURE.getMessage()+"商铺不存在");
+            return data;
+        }
+        redisUtils.setByLogic(CACHE_LOGIC+id,shop,2L,TimeUnit.HOURS);
+        data = ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage());
         return data;
     }
 }

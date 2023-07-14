@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lixy.bluebook.Dao.VoucherMapper">
+
+    <insert id="addVoucher" parameterType="voucher">
+        insert into tb_voucher values (#{id},#{shopId},#{title},#{subTitle},#{rules},#{payValue},#{actualValue},#{type},#{status},#{createTime},#{updateTime})
+    </insert>
+    <insert id="addSecKillVoucher" parameterType="voucher">
+        insert into tb_seckill_voucher values (#{id},#{stock},#{createTime},#{beginTime},#{endTime},#{updateTime})
+    </insert>
+    <select id="getVoucherById" resultType="com.lixy.bluebook.Entity.Voucher">
+        select * from tb_voucher where id = #{id}
+    </select>
+</mapper>
