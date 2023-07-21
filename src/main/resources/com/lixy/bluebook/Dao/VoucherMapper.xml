@@ -8,7 +8,12 @@
     <insert id="addSecKillVoucher" parameterType="voucher">
         insert into tb_seckill_voucher values (#{id},#{stock},#{createTime},#{beginTime},#{endTime},#{updateTime})
     </insert>
+    <update id="updateVoucherStockById">
+        update tb_seckill_voucher set stock = stock-1 where voucher_id = #{id} and stock > 0
+    </update>
     <select id="getVoucherById" resultType="com.lixy.bluebook.Entity.Voucher">
-        select * from tb_voucher where id = #{id}
+        select v.id, v.shop_id, v.title, v.sub_title, v.rules, v.pay_value, v.actual_value, v.type, v.status, v.create_time, v.update_time, s.stock, s.begin_time, s.end_time
+        from tb_voucher as v ,tb_seckill_voucher as s
+        where v.id = #{id} and v.id = s.voucher_id
     </select>
 </mapper>

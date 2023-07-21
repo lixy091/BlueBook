@@ -63,4 +63,18 @@ public class VoucherOrder {
      * 更新时间
      */
     private LocalDateTime updateTime;
+
+    {
+        createTime = LocalDateTime.now();
+        updateTime = createTime;
+        payTime = createTime;
+    }
+
+    public VoucherOrder(Long id, Long userId, Long voucherId, Integer payType, Integer status) {
+        this.id = id;
+        this.userId = userId;
+        this.voucherId = voucherId;
+        this.payType = payType;
+        this.status = status;
+    }
 }

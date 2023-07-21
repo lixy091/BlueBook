@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lixy.bluebook.Dao.OrderMapper">
+
+    <insert id="createVoucherOrder" parameterType="voucherOrder">
+        insert into tb_voucher_order (id, user_id, voucher_id, pay_type, status, create_time, pay_time, update_time)
+        values (#{id} , #{userId} , #{voucherId}, #{payType}, #{status}, #{createTime}, #{payTime}, #{updateTime})
+    </insert>
+    <select id="isBought" resultType="long">
+        select COUNT(1) from tb_voucher_order where user_id = #{id}
+    </select>
+</mapper>

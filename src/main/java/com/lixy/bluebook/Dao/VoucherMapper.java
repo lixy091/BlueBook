@@ -14,4 +14,7 @@ public interface VoucherMapper {
     long addSecKillVoucher(Voucher voucher);
 
     Voucher getVoucherById(Long id);
+
+    long updateVoucherStockById(Long id);
+
 }

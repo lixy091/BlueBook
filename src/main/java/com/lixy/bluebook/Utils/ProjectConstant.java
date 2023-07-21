@@ -11,4 +11,5 @@ public class ProjectConstant {
     public static final String CACHE_LOGIC = "cache:logic:";
 
     public static final String LOCK = "lock:";
+    public static final String ORDER = "order:";
 }
