@@ -12,4 +12,8 @@ public class ProjectConstant {
 
     public static final String LOCK = "lock:";
     public static final String ORDER = "order:";
+    public static final String KILL_STOCK = "kill:stock:";
+    public static final String ORDER_USER = "order:user:";
+
+    public static final String IMAGE_DIR = "nginx-1.18.0/html/bluebook/imgs";
 }

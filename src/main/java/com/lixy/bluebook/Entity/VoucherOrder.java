@@ -68,6 +68,7 @@ public class VoucherOrder {
         createTime = LocalDateTime.now();
         updateTime = createTime;
         payTime = createTime;
+        status = 1;
     }
 
     public VoucherOrder(Long id, Long userId, Long voucherId, Integer payType, Integer status) {
@@ -76,5 +77,11 @@ public class VoucherOrder {
         this.voucherId = voucherId;
         this.payType = payType;
         this.status = status;
+    }
+
+    public VoucherOrder(Long id, Long userId, Long voucherId) {
+        this.id = id;
+        this.userId = userId;
+        this.voucherId = voucherId;
     }
 }

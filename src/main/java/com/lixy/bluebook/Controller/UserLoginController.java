@@ -41,20 +41,16 @@ public class UserLoginController {
             @RequestParam("phone") String phoneNumber,
             @ApiParam(value = "验证码",name = "verifyCode",required = true)
             @RequestParam("code") String verifyCode
-//            @ApiParam(value = "电话号码以及验证码")
-//            @RequestBody Map<String , Object> paramsMap
             ){
-//        String phoneNumber = (String) paramsMap.get("phone");
-//        String verifyCode = (String) paramsMap.get("code");
         return userLoginService.login(phoneNumber,verifyCode);
     }
 
     @ApiOperation("账号密码登录")
     @PostMapping("password")
     public ResponseData loginByPassword(
-            @ApiParam(value = "用户手机号",name = "phone", required = true)
+            @ApiParam(value = "用户手机号",name = "phone", required = true, type = "string")
             @RequestParam("phone") String phoneNumber,
-            @ApiParam(value = "用户密码",name = "password", required = true)
+            @ApiParam(value = "用户密码",name = "password", required = true, type = "string")
             @RequestParam("password") String password
     ){
         return userLoginService.loginByPassword(phoneNumber,password);

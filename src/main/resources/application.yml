@@ -22,7 +22,7 @@ spring:
       matching-strategy: ant_path_matcher
 
 mybatis:
-  type-aliases-package: com.lixy.bluebook.Entity
+  type-aliases-package: com.lixy.bluebook.Entity , com.lixy.bluebook.DTO
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.log4j2.Log4j2Impl

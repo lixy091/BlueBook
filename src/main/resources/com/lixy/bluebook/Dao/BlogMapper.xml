@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lixy.bluebook.Dao.BlogMapper">
+
+    <insert id="saveBlog" parameterType="blog">
+        insert into tb_blog (id, shop_id, user_id, title, images, content, liked, comments)
+        VALUES (#{id},#{shopId},#{user.getId()},#{title},#{images},#{content},#{liked},#{comments})
+    </insert>
+    <resultMap id="blogId" type="blog">
+        <id property="id" column="b.id"></id>
+        <result property="shopId" column="b.shop_id"></result>
+        <collection property="user" ofType="userDTO">
+        </collection>
+        <result property="title" column="b.title"></result>
+        <result property="images" column="b.images"></result>
+        <result property="content" column="b.content"></result>
+        <result property="liked" column="b.liked"></result>
+        <result property="comments" column="b.comments"></result>
+        <result property="createTime" column="b.create_time"></result>
+        <result property="updateTime" column="b.update_time"></result>
+    </resultMap>
+    <select id="getBlogById" resultType="com.lixy.bluebook.Entity.Blog">
+        select b.* , u.id , u.icon , u.nick_name
+        from tb_blog as b , tb_user as u
+        where b.user_id = u.id
+    </select>
+</mapper>

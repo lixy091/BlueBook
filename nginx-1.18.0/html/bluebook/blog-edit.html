@@ -124,7 +124,7 @@
           headers: {"Content-Type": "multipart/form-data;boundary=" + new Date().getTime()}
         };
         axios
-          .post("/upload/blog", formData, config)
+          .post("/blog/upload", formData, config)
           .then(({data}) => this.fileList.push('/imgs' + data))
           .catch(this.$message.error);
       },
