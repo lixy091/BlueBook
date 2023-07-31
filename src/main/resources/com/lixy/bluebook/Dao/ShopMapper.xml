@@ -5,7 +5,14 @@
     <select id="getShopById" resultType="com.lixy.bluebook.Entity.Shop">
         select * from tb_shop where id = #{id}
     </select>
-
+    <select id="getShopListByName" resultType="com.lixy.bluebook.Entity.Shop">
+        select * from tb_shop
+        <where>
+            <if test="name != null and name != ''">
+                name like '%${name}%'
+            </if>
+        </where>
+    </select>
     <update id="updateShop" parameterType="shop">
         update tb_shop
         set

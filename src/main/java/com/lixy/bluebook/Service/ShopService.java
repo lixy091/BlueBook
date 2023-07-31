@@ -13,4 +13,6 @@ public interface ShopService {
     ResponseData updateShop(Shop shop);
 
     ResponseData addHotShop(Long id);
+
+    ResponseData getShopByName(String name, int currentPage, int pageSize);
 }

@@ -4,24 +4,32 @@
 
     <insert id="saveBlog" parameterType="blog">
         insert into tb_blog (id, shop_id, user_id, title, images, content, liked, comments)
-        VALUES (#{id},#{shopId},#{user.getId()},#{title},#{images},#{content},#{liked},#{comments})
+        VALUES (#{id},#{shopId},#{user.id},#{title},#{images},#{content},#{liked},#{comments})
     </insert>
+    <update id="updateBlogLiked">
+        update tb_blog set liked = liked +(${delta}) where id = #{id}
+    </update>
     <resultMap id="blogId" type="blog">
-        <id property="id" column="b.id"></id>
-        <result property="shopId" column="b.shop_id"></result>
-        <collection property="user" ofType="userDTO">
-        </collection>
-        <result property="title" column="b.title"></result>
-        <result property="images" column="b.images"></result>
-        <result property="content" column="b.content"></result>
-        <result property="liked" column="b.liked"></result>
-        <result property="comments" column="b.comments"></result>
-        <result property="createTime" column="b.create_time"></result>
-        <result property="updateTime" column="b.update_time"></result>
+        <id property="id" column="id"/>
+        <result property="shopId" column="shop_id"/>
+        <result property="title" column="title"/>
+        <result property="images" column="images"/>
+        <result property="content" column="content"/>
+        <result property="liked" column="liked"/>
+        <result property="comments" column="comments"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <association property="user" select="com.lixy.bluebook.Dao.UserMapper.getUserDTO" column="user_id"/>
     </resultMap>
-    <select id="getBlogById" resultType="com.lixy.bluebook.Entity.Blog">
-        select b.* , u.id , u.icon , u.nick_name
-        from tb_blog as b , tb_user as u
-        where b.user_id = u.id
+    <select id="getBlogById" resultMap="blogId">
+        select *
+        from tb_blog
+        where id = #{id}
+    </select>
+    <select id="getBlogByUserId" resultType="com.lixy.bluebook.Entity.Blog">
+        select * from tb_blog where user_id = #{id} limit ${currentNum} , ${pageSize}
+    </select>
+    <select id="getHotBlog" resultMap="blogId">
+        select * from tb_blog order by liked
     </select>
 </mapper>

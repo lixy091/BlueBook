@@ -13,4 +13,10 @@ public interface BlogService {
     ResponseData saveBlog(Blog blog);
 
     ResponseData getBlog(long blogId);
+
+    ResponseData getMyBlog(int currentPage, int pageSize);
+
+    ResponseData getHotBlog(int currentPage, int pageSize);
+
+    ResponseData likesBlog(long id);
 }

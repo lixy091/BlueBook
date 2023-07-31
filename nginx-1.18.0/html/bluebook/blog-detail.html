@@ -40,14 +40,14 @@
     </div>
     <div class="basic">
       <div class="basic-icon" @click="toOtherInfo">
-        <img :src="blog.icon || '/imgs/icons/default-icon.png'" alt="">
+        <img :src="blog.user.icon || '/imgs/icons/default-icon.png'" alt="">
       </div>
       <div class="basic-info">
         <div class="name">{{blog.name}}</div>
         <span class="time">{{formatTime(new Date(blog.createTime))}}</span>
       </div>
       <div style="width: 20%">
-        <div class="logout-btn" @click="follow" v-show="!user || user.id !== blog.userId ">
+        <div class="logout-btn" @click="follow" v-show="!user || user.id !== blog.user.id ">
           {{followed ? '取消关注' : '关注'}}
         </div>
       </div>
@@ -202,10 +202,10 @@
         history.back();
       },
       toOtherInfo(){
-        if(this.blog.userId === this.user.id){
+        if(this.blog.user.id === this.user.id){
           location.href = "/info.html"
         }else{
-          location.href = "/other-info.html?id=" + this.blog.userId
+          location.href = "/other-info.html?id=" + this.blog.user.id
         }
       },
       queryBlogById(id) {
@@ -249,12 +249,12 @@
           })
       },
       isFollowed(){
-        axios.get("/follow/or/not/" + this.blog.userId)
+        axios.get("/follow/or/not/" + this.blog.user.id)
           .then(({data}) => this.followed = data)
           .catch(this.$message.error)
       },
       follow(){
-        axios.put("/follow/" + this.blog.userId + "/" + !this.followed)
+        axios.put("/follow/" + this.blog.user.id + "/" + !this.followed)
           .then(() => {
             this.$message.success(this.followed ? "已取消关注" : "已关注")
             this.followed = !this.followed
@@ -270,11 +270,11 @@
       },
       queryLoginUser(){
         // 查询用户信息
-        axios.get("/user/me")
+        axios.get("/user/getUser")
           .then(({ data }) => {
             // 保存用户
             this.user = data;
-            if(this.user.id !== this.blog.userId){
+            if(this.user.id !== this.blog.user.id){
               this.isFollowed();
             }
           })

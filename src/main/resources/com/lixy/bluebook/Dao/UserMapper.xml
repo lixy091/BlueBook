@@ -2,4 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lixy.bluebook.Dao.UserMapper">
 
+    <select id="getUserInfo" resultType="com.lixy.bluebook.Entity.User">
+        select * from tb_user where id = #{id}
+    </select>
+    <select id="getUserDTO" resultType="com.lixy.bluebook.DTO.UserDTO">
+        select id , nick_name , icon from tb_user where id = #{id}
+    </select>
+
 </mapper>

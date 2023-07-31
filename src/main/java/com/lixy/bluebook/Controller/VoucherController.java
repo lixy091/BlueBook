@@ -15,7 +15,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("voucher")
-@Api("优惠券相关接口")
+@Api(tags ="优惠券相关接口")
 public class VoucherController {
 
     @Resource

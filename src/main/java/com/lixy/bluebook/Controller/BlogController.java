@@ -39,12 +39,43 @@ public class BlogController {
         return blogService.saveBlog(blog);
     }
 
-    @ApiOperation("查询blog详情")
-    @GetMapping("/info/{id}")
+    @ApiOperation("查询blog")
+    @GetMapping("/{id}")
     public ResponseData getBlog(
-            @ApiParam(value = "" , name = "" ,required = true)
+            @ApiParam(value = "blogId" , name = "blogId" ,required = true)
             @PathVariable("id") long blogId
     ){
         return blogService.getBlog(blogId);
+    }
+
+    @ApiOperation("查询自己的blog")
+    @GetMapping("/mine")
+    public ResponseData getMyBlog(
+            @ApiParam(value = "currentPage" , name = "当前页码")
+            @RequestParam(value = "currentPage" , defaultValue = "1") int currentPage,
+            @ApiParam(value = "pageSize" , name = "每页条数")
+            @RequestParam(value = "pageSize" , defaultValue = "10") int pageSize
+    ){
+        return blogService.getMyBlog(currentPage , pageSize);
+    }
+
+    @ApiOperation("首页博客")
+    @GetMapping("hot")
+    public ResponseData getHotBlog(
+            @ApiParam(value = "currentPage" , name = "当前页码")
+            @RequestParam(value = "currentPage" , defaultValue = "1") int currentPage,
+            @ApiParam(value = "pageSize" , name = "每页条数")
+            @RequestParam(value = "pageSize" , defaultValue = "10") int pageSize
+    ){
+        return blogService.getHotBlog(currentPage , pageSize);
+    }
+
+    @ApiOperation("点赞博客")
+    @PutMapping("/likes/{id}")
+    public ResponseData likesBlog(
+            @ApiParam(value = "",name = "",required = true)
+            @PathVariable("id") long id
+    ){
+        return blogService.likesBlog(id);
     }
 }

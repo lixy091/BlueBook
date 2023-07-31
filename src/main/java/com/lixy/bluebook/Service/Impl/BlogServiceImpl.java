@@ -10,13 +10,20 @@ import com.lixy.bluebook.Utils.ProjectConstant;
 import com.lixy.bluebook.Utils.ResponseData;
 import com.lixy.bluebook.Utils.UserLocal;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.session.RowBounds;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
+
+import static com.lixy.bluebook.Utils.ProjectConstant.BLOG_LIKED;
 
 /**
  * @author lixy
@@ -27,6 +34,8 @@ public class BlogServiceImpl implements BlogService {
 
     @Resource
     private BlogMapper blogMapper;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     @Override
     public ResponseData uploadImage(MultipartFile image) {
@@ -50,8 +59,56 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public ResponseData getBlog(long blogId) {
+        Blog blog = blogMapper.getBlogById(blogId);
+        if (blog == null){
+            return ResponseData.getInstance(ExceptionEnums.FAILURE.getCode(), ExceptionEnums.FAILURE.getMessage()+"未找到该blog");
+        }
+        return ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage()).setData(blog);
+    }
 
-        return null;
+    @Override
+    public ResponseData getMyBlog(int currentPage, int pageSize) {
+        ResponseData data;
+        UserDTO user = UserLocal.getUserDTO();
+        List<Blog> blogList = blogMapper.getBlogByUserId(user.getId(), (currentPage-1)*pageSize , pageSize);
+        if (blogList == null || blogList.isEmpty()){
+            data = ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage());
+            data.setData(Collections.EMPTY_LIST);
+            return data;
+        }
+        data = ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage());
+        data.setData(blogList);
+        return data;
+    }
+
+    @Override
+    public ResponseData getHotBlog(int currentPage, int pageSize) {
+        List<Blog> blogs = blogMapper.getHotBlog(new RowBounds((currentPage-1)*pageSize , pageSize));
+        if (blogs == null){
+            blogs = Collections.emptyList();
+        }
+        return ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage()).setData(blogs);
+    }
+
+    @Override
+    public ResponseData likesBlog(long id) {
+        UserDTO user = UserLocal.getUserDTO();
+        String key = BLOG_LIKED+id;
+        String delta = "";
+        Double score = stringRedisTemplate.opsForZSet().score(key, user.getId().toString());
+        if (score == null){
+            delta = "1";
+            stringRedisTemplate.opsForZSet().add(key , user.getId().toString() , System.currentTimeMillis());
+            blogMapper.updateBlogLiked(id , delta);
+            return ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage()).setData("点赞成功");
+        }
+        else {
+            delta = "-1";
+            stringRedisTemplate.opsForZSet().remove(key , user.getId().toString());
+            blogMapper.updateBlogLiked(id , delta);
+            return ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage()).setData("取消点赞成功");
+        }
+
     }
 
     private String createNewFileName(String originalFilename) {
@@ -70,4 +127,5 @@ public class BlogServiceImpl implements BlogService {
         // 生成文件名
         return StrUtil.format("/blogs/{}/{}/{}.{}", d1, d2, name, suffix);
     }
+
 }

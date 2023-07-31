@@ -1,5 +1,7 @@
 package com.lixy.bluebook.Dao;
 
+import com.lixy.bluebook.DTO.UserDTO;
+import com.lixy.bluebook.Entity.User;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -7,4 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface UserMapper {
+    User getUserInfo(long id);
+
+    UserDTO getUserDTO(long id);
 }

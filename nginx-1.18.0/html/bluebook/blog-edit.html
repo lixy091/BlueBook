@@ -97,7 +97,7 @@
     },
     methods: {
       queryShops() {
-        axios.get("/shop/of/name?name=" + this.shopName)
+        axios.get("/shop/name?name=" + this.shopName)
           .then(({data}) => this.shops = data)
           .catch(this.$message.error)
       },
@@ -109,7 +109,7 @@
         let {...data} = this.params;
         data.images = this.fileList.join(",");
         data.shopId = this.selectedShop.id;
-        axios.post("/blog", data)
+        axios.post("/blog/save", data)
           .then(resp => location.href = "/info.html")
           .catch(this.$message.error)
       },
@@ -140,7 +140,7 @@
           location.href = "login.html"
         }
         // 查询用户信息
-        axios.get("/user/me")
+        axios.get("/user/getUser")
           .then()
           .catch(err => {
             this.$message.error(err);

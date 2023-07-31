@@ -47,4 +47,17 @@ public class ShopController {
         return shopService.addHotShop(id);
     }
 
+    @ApiOperation("根据name获取商铺分页信息")
+    @GetMapping("/name")
+    public ResponseData getShopByName(
+            @ApiParam(value = "",name = "")
+            @RequestParam(value = "name" , required = false) String name,
+            @ApiParam(value = "currentPage" , name = "当前页码")
+            @RequestParam(value = "currentPage" , defaultValue = "1") int currentPage,
+            @ApiParam(value = "pageSize" , name = "每页条数")
+            @RequestParam(value = "pageSize" , defaultValue = "10") int pageSize
+    ){
+        return shopService.getShopByName(name , currentPage , pageSize);
+    }
+
 }

@@ -112,7 +112,7 @@
       },
       queryLoginUser() {
         // 查询用户信息
-        axios.get("/user/me")
+        axios.get("/user/getUser")
           .then(({data}) => {
             // 保存用户
             this.loginUser = data;

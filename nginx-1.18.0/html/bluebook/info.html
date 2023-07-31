@@ -124,7 +124,7 @@
         this.count += 2;
       },
       queryBlogs() {
-        axios.get("/blog/of/me")
+        axios.get("/blog/mine")
           .then(({data}) => this.blogs = data)
           .catch(this.$message.error)
       },

@@ -115,7 +115,7 @@
     methods: {
       checkLogin() {
         // 查询用户信息
-        axios.get("/user/me")
+        axios.get("/user/getUser")
         .then(({data}) => {
           this.user = data;
           this.info = JSON.parse(sessionStorage.getItem("userInfo")) || {}

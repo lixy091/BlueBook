@@ -9,12 +9,15 @@ import com.lixy.bluebook.Utils.ExceptionEnums;
 import com.lixy.bluebook.Utils.ProjectConstant;
 import com.lixy.bluebook.Utils.RedisUtils;
 import com.lixy.bluebook.Utils.ResponseData;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.lixy.bluebook.Utils.ProjectConstant.*;
@@ -74,5 +77,14 @@ public class ShopServiceImpl implements ShopService {
         redisUtils.setByLogic(CACHE_LOGIC+id,shop,2L,TimeUnit.HOURS);
         data = ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage());
         return data;
+    }
+
+    @Override
+    public ResponseData getShopByName(String name, int currentPage, int pageSize) {
+        List<Shop> shops = shopMapper.getShopListByName(name , new RowBounds((currentPage-1)*pageSize , pageSize));
+        if (shops == null){
+            shops = Collections.emptyList();
+        }
+        return ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage()).setData(shops);
     }
 }
