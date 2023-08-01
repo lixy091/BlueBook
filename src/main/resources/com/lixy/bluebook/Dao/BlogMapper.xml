@@ -30,6 +30,9 @@
         select * from tb_blog where user_id = #{id} limit ${currentNum} , ${pageSize}
     </select>
     <select id="getHotBlog" resultMap="blogId">
-        select * from tb_blog order by liked
+        select * from tb_blog order by liked DESC
+    </select>
+    <select id="getBlogsByUser" resultType="com.lixy.bluebook.Entity.Blog">
+        select * from tb_blog where user_id = #{userId}
     </select>
 </mapper>

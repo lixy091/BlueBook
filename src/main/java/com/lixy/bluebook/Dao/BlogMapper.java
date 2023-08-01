@@ -22,4 +22,6 @@ public interface BlogMapper {
     List<Blog> getHotBlog(RowBounds rowBounds);
 
     long updateBlogLiked(@Param("id") long id , @Param("delta") String delta);
+
+    List<Blog> getBlogsByUser(@Param("userId") long userId , RowBounds rowBounds);
 }

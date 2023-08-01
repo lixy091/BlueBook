@@ -18,5 +18,11 @@ public interface BlogService {
 
     ResponseData getHotBlog(int currentPage, int pageSize);
 
-    ResponseData likesBlog(long id);
+    ResponseData likeBlog(long id);
+
+    ResponseData likingUserList(long id);
+
+    ResponseData getBlogsByUser(long id, int currentPage);
+
+    ResponseData getBlogsOfFollow(long max, Integer offset);
 }

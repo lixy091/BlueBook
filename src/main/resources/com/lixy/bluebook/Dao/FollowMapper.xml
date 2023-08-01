@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lixy.bluebook.Dao.FollowMapper">
+    <insert id="insertFollow" parameterType="follow">
+        insert into tb_follow(user_id, follow_user_id) VALUES (#{userId} , #{followUserId})
+    </insert>
+    <delete id="deleteFollow">
+        delete from tb_follow where user_id = #{id} and follow_user_id = #{fid}
+    </delete>
+    <select id="getIsFollowByUserId" resultType="java.lang.Long">
+        select count(1) from tb_follow where user_id = #{id} and follow_user_id = #{fid}
+    </select>
+    <select id="getAllFansId" resultType="java.lang.Long">
+        select user_id from tb_follow where follow_user_id = #{id}
+    </select>
+</mapper>

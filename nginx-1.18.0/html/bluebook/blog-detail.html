@@ -221,7 +221,7 @@
           .catch(this.$message.error)
       },
       queryShopById(shopId) {
-        axios.get("/shop/" + shopId)
+        axios.get("/shop/getShop/" + shopId)
           .then(({data}) => {
             data.image = data.images.split(",")[0]
             this.shop = data
@@ -249,7 +249,7 @@
           })
       },
       isFollowed(){
-        axios.get("/follow/or/not/" + this.blog.user.id)
+        axios.get("/follow/isFollow/" + this.blog.user.id)
           .then(({data}) => this.followed = data)
           .catch(this.$message.error)
       },
