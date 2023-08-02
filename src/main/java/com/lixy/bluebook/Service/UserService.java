@@ -8,4 +8,8 @@ import com.lixy.bluebook.Utils.ResponseData;
 public interface UserService {
     ResponseData getUserInfo(long id);
     ResponseData getUser();
+
+    ResponseData sign();
+
+    ResponseData getSignCount();
 }

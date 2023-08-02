@@ -15,4 +15,6 @@ public interface ShopService {
     ResponseData addHotShop(Long id);
 
     ResponseData getShopByName(String name, int currentPage, int pageSize);
+
+    ResponseData getGeoShopByType(int typeId, int current, String sortBy, Double x, Double y);
 }

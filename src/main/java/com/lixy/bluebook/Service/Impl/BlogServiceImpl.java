@@ -16,6 +16,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -54,6 +55,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
+    @Transactional
     public ResponseData saveBlog(Blog blog) {
         UserDTO user = UserLocal.getUserDTO();
         blog.setUser(user);
@@ -152,12 +154,12 @@ public class BlogServiceImpl implements BlogService {
         long userId = UserLocal.getUserDTO().getId();
         Map<String , Object> resultMap = new HashMap<>();
         resultMap.put("list" , Collections.emptyList());
-        resultMap.put("minTime" , BLANK_OBJECT);
-        resultMap.put("offset" , BLANK_OBJECT);
+        resultMap.put("minTime" , System.currentTimeMillis());
+        resultMap.put("offset" , 0);
         List<Long> idList = new ArrayList<>();
         long minTime  = 0L;
         int offsetNext = 1;
-        Set<ZSetOperations.TypedTuple<String>> typedTuples = stringRedisTemplate.opsForZSet().reverseRangeByScoreWithScores(FOLLOWS_FEED + userId, 0, max, offset, 5);
+        Set<ZSetOperations.TypedTuple<String>> typedTuples = stringRedisTemplate.opsForZSet().reverseRangeByScoreWithScores(FOLLOWS_FEED + userId, 0, max, offset, 2);
         if (typedTuples == null || typedTuples.isEmpty()){
             return ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage()).setData(resultMap);
         }
@@ -166,12 +168,15 @@ public class BlogServiceImpl implements BlogService {
             if (minTime == typedTuple.getScore().longValue()){
                 offsetNext++;
             }else {
+                minTime = typedTuple.getScore().longValue();
                 offsetNext = 1;
             }
-            minTime = typedTuple.getScore().longValue();
         }
         List<Blog> blogs = idList.stream().map(blogMapper::getBlogById).collect(Collectors.toList());
-        //TODO blogs待处理 , 接口未测试
+        blogs.forEach(blog -> {
+            Double score = stringRedisTemplate.opsForZSet().score(BLOG_LIKED + blog.getId(), String.valueOf(userId));
+            blog.setIsLike(score != null && score >0);
+        });
         resultMap.put("list" , blogs);
         resultMap.put("minTime" , minTime);
         resultMap.put("offset" , offsetNext);

@@ -43,7 +43,7 @@
         <img :src="blog.user.icon || '/imgs/icons/default-icon.png'" alt="">
       </div>
       <div class="basic-info">
-        <div class="name">{{blog.name}}</div>
+        <div class="name">{{blog.user.nickName}}</div>
         <span class="time">{{formatTime(new Date(blog.createTime))}}</span>
       </div>
       <div style="width: 20%">
@@ -85,7 +85,7 @@
     <div class="blog-divider"></div>
     <div class="blog-comments">
       <div class="comments-head">
-        <div>网友评价 <span>（119）</span></div>
+        <div>网友评价 <span>(119)</span></div>
         <div><i class="el-icon-arrow-right"></i></div>
       </div>
       <div class="comment-list">

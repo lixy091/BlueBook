@@ -18,4 +18,5 @@ public interface ShopMapper {
 
     List<Shop> getShopListByName(@Param("name") String name , RowBounds rowBounds);
 
+    List<Shop> getShops();
 }

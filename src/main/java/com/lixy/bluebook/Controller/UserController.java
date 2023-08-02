@@ -5,10 +5,7 @@ import com.lixy.bluebook.Utils.ResponseData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -37,4 +34,17 @@ public class UserController {
     ){
         return userService.getUserInfo(id);
     }
+
+    @ApiOperation("用户签到")
+    @PostMapping("/sign")
+    public ResponseData sign(){
+        return userService.sign();
+    }
+
+    @ApiOperation("用户签到统计")
+    @PostMapping("/sign/count")
+    public ResponseData getSignCount(){
+        return userService.getSignCount();
+    }
+
 }

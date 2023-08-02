@@ -103,7 +103,7 @@ public class BlogController {
     @GetMapping("/ofFollow")
     public ResponseData getBlogsOfFollow(
             @ApiParam(value = "" ,name = "",required = true)
-            @RequestParam("max") long max,
+            @RequestParam("lastId") long max,
             @ApiParam(value = "" , name = "" )
             @RequestParam(value = "offset" , defaultValue = "0") Integer offset
     ){

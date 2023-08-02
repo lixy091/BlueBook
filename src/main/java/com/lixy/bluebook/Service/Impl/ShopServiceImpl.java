@@ -10,7 +10,12 @@ import com.lixy.bluebook.Utils.ProjectConstant;
 import com.lixy.bluebook.Utils.RedisUtils;
 import com.lixy.bluebook.Utils.ResponseData;
 import org.apache.ibatis.session.RowBounds;
+import org.springframework.data.geo.Distance;
+import org.springframework.data.geo.GeoResult;
+import org.springframework.data.geo.GeoResults;
+import org.springframework.data.redis.connection.RedisGeoCommands;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.domain.geo.GeoReference;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -19,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static com.lixy.bluebook.Utils.ProjectConstant.*;
 
@@ -36,8 +42,8 @@ public class ShopServiceImpl implements ShopService {
     @Override
     public ResponseData getShopById(Long id) {
         ResponseData data;
-//        Shop shop = redisUtils.getBeanFromRedis(CACHE_SHOP+id,id, Shop.class,shopMapper::getShopById);
-        Shop shop = redisUtils.getLogicBeanFromRedis(CACHE_LOGIC+id,id, Shop.class,shopMapper::getShopById);
+        Shop shop = redisUtils.getBeanFromRedis(CACHE_SHOP+id,id, Shop.class,shopMapper::getShopById);
+//        Shop shop = redisUtils.getLogicBeanFromRedis(CACHE_LOGIC+id,id, Shop.class,shopMapper::getShopById);
         if (shop == null){
             data = ResponseData.getInstance(ExceptionEnums.FAILURE.getCode(), ExceptionEnums.FAILURE.getMessage()+"商铺不存在");
             return data;
@@ -84,6 +90,37 @@ public class ShopServiceImpl implements ShopService {
         List<Shop> shops = shopMapper.getShopListByName(name , new RowBounds((currentPage-1)*pageSize , pageSize));
         if (shops == null){
             shops = Collections.emptyList();
+        }
+        return ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage()).setData(shops);
+    }
+
+    @Override
+    public ResponseData getGeoShopByType(int typeId, int current, String sortBy, Double x, Double y) {
+        List<Shop> shops;
+        if ("comments".equals(sortBy)){
+            return ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage());
+        }else if ("score".equals(sortBy)){
+            return ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage());
+        }else {
+            int from = (current-1)*PAGE_SIZE;
+            int end = current*PAGE_SIZE;
+            // GEOSEARCH key BYLONLAT x y BYRADIUS 5000 WITHDISTANCE
+            GeoResults<RedisGeoCommands.GeoLocation<String>> searchedShop = stringRedisTemplate.opsForGeo().search(SHOP_GEO + typeId
+                    , GeoReference.fromCoordinate(x, y)
+                    , new Distance(5000)
+                    , RedisGeoCommands.GeoSearchCommandArgs.newGeoSearchArgs().includeDistance().limit(end));
+            if (searchedShop == null){
+                return ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage()).setData(Collections.emptyList());
+            }
+            List<GeoResult<RedisGeoCommands.GeoLocation<String>>> content = searchedShop.getContent();
+            if (content.isEmpty() || content.size() < from){
+                return ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage()).setData(Collections.emptyList());
+            }
+            shops = content.stream().skip(from).map(gs -> {
+                Shop shop = shopMapper.getShopById(Long.parseLong(gs.getContent().getName()));
+                shop.setDistance(gs.getDistance().getValue());
+                return shop;
+            }).collect(Collectors.toList());
         }
         return ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage()).setData(shops);
     }

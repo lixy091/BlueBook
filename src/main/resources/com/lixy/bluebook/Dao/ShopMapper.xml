@@ -13,6 +13,9 @@
             </if>
         </where>
     </select>
+    <select id="getShops" resultType="com.lixy.bluebook.Entity.Shop">
+        select * from tb_shop
+    </select>
     <update id="updateShop" parameterType="shop">
         update tb_shop
         set

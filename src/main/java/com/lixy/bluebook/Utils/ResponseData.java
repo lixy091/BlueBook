@@ -4,8 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.IOException;
+import java.io.Serializable;
 
-public class ResponseData {
+public class ResponseData{
     @ApiModelProperty(
             value = "具体状态码",
             example = "xbb-core-200"

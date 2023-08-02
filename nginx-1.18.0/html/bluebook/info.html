@@ -75,8 +75,8 @@
             <div class="blog-img2" @click="toBlogDetail(b)"><img :src="b.img" alt=""></div>
             <div class="blog-title">{{b.title}}</div>
             <div class="blog-foot">
-              <div class="blog-user-icon"><img :src="b.icon || '/imgs/icons/default-icon.png'" alt=""></div>
-              <div class="blog-user-name">{{b.name}}</div>
+              <div class="blog-user-icon"><img :src="b.user.icon || '/imgs/icons/default-icon.png'" alt=""></div>
+              <div class="blog-user-name">{{b.user.nickName}}</div>
               <div class="blog-liked" @click="addLike(b)">
                 <svg t="1646634642977" class="icon" viewBox="0 0 1024 1024" version="1.1"
                      xmlns="http://www.w3.org/2000/svg" p-id="2187" width="14" height="14">
@@ -134,7 +134,7 @@
           this.params.minTime = new Date().getTime() + 1;
         }
         let {minTime, offset: os} = this.params;
-        axios.get("/blog/of/follow", {
+        axios.get("/blog/ofFollow", {
             params: {offset: os, lastId: minTime || new Date().getTime() + 1}
           })
           .then(({data}) => {

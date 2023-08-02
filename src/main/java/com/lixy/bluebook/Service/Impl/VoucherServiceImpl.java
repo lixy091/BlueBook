@@ -75,6 +75,7 @@ public class VoucherServiceImpl implements VoucherService {
                             , StreamReadOptions.empty().count(1).block(Duration.ofSeconds(5))
                             , StreamOffset.create(streamName, ReadOffset.lastConsumed()));
                     if (messageList == null || messageList.size() == 0){
+                        Thread.sleep(10000);
                         continue;
                     }
                     MapRecord<String, Object, Object> record = messageList.get(0);

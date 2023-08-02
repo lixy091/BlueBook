@@ -50,7 +50,7 @@ public class ShopController {
     @ApiOperation("根据name获取商铺分页信息")
     @GetMapping("/name")
     public ResponseData getShopByName(
-            @ApiParam(value = "",name = "")
+            @ApiParam(value = "name",name = "商铺名称")
             @RequestParam(value = "name" , required = false) String name,
             @ApiParam(value = "currentPage" , name = "当前页码")
             @RequestParam(value = "currentPage" , defaultValue = "1") int currentPage,
@@ -58,6 +58,23 @@ public class ShopController {
             @RequestParam(value = "pageSize" , defaultValue = "10") int pageSize
     ){
         return shopService.getShopByName(name , currentPage , pageSize);
+    }
+
+    @ApiOperation("根据分类获取商铺分页及地理信息")
+    @GetMapping("/ofType")
+    public ResponseData getGeoShopByType(
+            @ApiParam(value = "" , name = "" , required = true)
+            @RequestParam("typeId") int typeId,
+            @ApiParam(value = "" , name = "" , required = true)
+            @RequestParam("current") int current,
+            @ApiParam(value = "" , name = "" )
+            @RequestParam( value = "sortBy" , required = false , defaultValue = "") String sortBy,
+            @ApiParam(value = "" , name = "" )
+            @RequestParam( value = "x" , required = false) Double x,
+            @ApiParam(value = "" , name = "" )
+            @RequestParam( value = "y" , required = false) Double y
+    ){
+        return shopService.getGeoShopByType(typeId, current, sortBy, x, y);
     }
 
 }
