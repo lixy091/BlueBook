@@ -3,7 +3,7 @@
 <mapper namespace="com.lixy.bluebook.Dao.UserLoginMapper">
 
 
-    <insert id="saveUser">
+    <insert id="saveUser" useGeneratedKeys="true" keyProperty="id">
         insert into tb_user
         (
          phone,

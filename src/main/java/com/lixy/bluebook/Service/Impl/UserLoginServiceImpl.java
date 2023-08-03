@@ -2,6 +2,7 @@ package com.lixy.bluebook.Service.Impl;
 
 import cn.hutool.core.util.RandomUtil;
 import com.lixy.bluebook.DTO.UserDTO;
+import com.lixy.bluebook.Dao.UserInfoMapper;
 import com.lixy.bluebook.Dao.UserLoginMapper;
 import com.lixy.bluebook.Entity.User;
 import com.lixy.bluebook.Service.UserLoginService;
@@ -34,9 +35,10 @@ public class UserLoginServiceImpl implements UserLoginService {
 
     @Resource
     private UserLoginMapper userLoginMapper;
-
     @Resource
     private RedisUtils redisUtils;
+    @Resource
+    private UserInfoMapper userInfoMapper;
 
     @Override
     public ResponseData sendCode(String phoneNumber) {
@@ -72,6 +74,7 @@ public class UserLoginServiceImpl implements UserLoginService {
         if (user == null){
             user = new User(phoneNumber);
             userLoginMapper.saveUser(user);
+            userInfoMapper.addUserInfo(user.getId());
         }
         //将用户信息保存至Redis
         String token = redisUtils.getTokenByUser(user);

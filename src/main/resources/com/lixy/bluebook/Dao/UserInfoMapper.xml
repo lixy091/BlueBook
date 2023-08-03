@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lixy.bluebook.Dao.UserInfoMapper">
+
+    <insert id="addUserInfo">
+        insert into tb_user_info (user_id) values (#{userId})
+    </insert>
+    <update id="updateUserInfoById" parameterType="userInfo">
+        update tb_user_info
+        set city = #{city},
+            introduce = #{introduce},
+            fans = #{fans},
+            followee = #{followee},
+            gender = #{gender},
+            birthday = #{birthday},
+            credits = #{credits},
+            level = #{level}
+        where user_id = #{userId}
+    </update>
+</mapper>

@@ -165,7 +165,7 @@
         history.back();
       },
       queryShopById(shopId) {
-        axios.get("/shop/" + shopId)
+        axios.get("/shop/getShop/" + shopId)
         .then(({data}) => {
           data.images = data.images.split(",")
           this.shop = data

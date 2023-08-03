@@ -56,4 +56,14 @@ public class VoucherController {
     ){
         return voucherService.buySecKillVoucher(id);
     }
+
+    @ApiOperation("获取店铺优惠券列表")
+    @GetMapping("list/{shopId}")
+    public ResponseData getVoucherListByShop(
+            @ApiParam(value = "" , name = "" , required = true)
+            @PathVariable("shopId") Long shopId
+    ){
+        //TODO
+        return null;
+    }
 }
