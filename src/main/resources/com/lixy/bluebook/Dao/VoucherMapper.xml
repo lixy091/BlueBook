@@ -16,4 +16,9 @@
         from tb_voucher as v ,tb_seckill_voucher as s
         where v.id = #{id} and v.id = s.voucher_id
     </select>
+    <select id="getVoucherListByShop" resultType="com.lixy.bluebook.Entity.Voucher">
+        select id, shop_id, title, sub_title, rules, pay_value, actual_value, type, status, create_time, update_time
+        from tb_voucher
+        where shop_id = #{shopId}
+    </select>
 </mapper>

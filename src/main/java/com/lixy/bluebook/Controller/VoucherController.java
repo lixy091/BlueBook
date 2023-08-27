@@ -63,7 +63,6 @@ public class VoucherController {
             @ApiParam(value = "" , name = "" , required = true)
             @PathVariable("shopId") Long shopId
     ){
-        //TODO
-        return null;
+        return voucherService.getVoucherListByShop(shopId);
     }
 }

@@ -1,5 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lixy.bluebook.Dao.CommentMapper">
+    <insert id="insertComment" parameterType="comment">
+        insert into tb_blog_comments(id, user_id, blog_id, parent_id, answer_id, content, liked, status)
+        values (#{id}, #{userId}, #{blogId}, #{parentId}, #{answerId}, #{content}, #{liked}, #{status})
+    </insert>
 
+    <select id="getCommentsByBLog" resultType="com.lixy.bluebook.Entity.Comment">
+        select id,
+               user_id,
+               blog_id,
+               parent_id,
+               answer_id,
+               content,
+               liked,
+               status,
+               create_time,
+               update_time
+        from tb_blog_comments
+        where blog_id = #{blogId}
+          and status = 0
+    </select>
+    <select id="getCommentsByIds" resultType="com.lixy.bluebook.Entity.Comment">
+        select id, user_id, blog_id, parent_id, answer_id, content, liked, status, create_time, update_time
+        from tb_blog_comments
+        <where>
+            <foreach collection="ids" separator="," item="id" open="id in (" close=")">
+                #{id}
+            </foreach>
+            and status = 0
+        </where>
+
+    </select>
+    <select id="getCommentsByFC" resultType="com.lixy.bluebook.Entity.Comment">
+        select id,
+               user_id,
+               blog_id,
+               parent_id,
+               answer_id,
+               content,
+               liked,
+               status,
+               create_time,
+               update_time
+        from tb_blog_comments
+        where parent_id = #{comId}
+    </select>
 </mapper>

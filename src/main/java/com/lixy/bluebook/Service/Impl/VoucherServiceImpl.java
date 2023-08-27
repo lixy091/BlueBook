@@ -153,4 +153,12 @@ public class VoucherServiceImpl implements VoucherService {
 
         return ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage()).setData(id);
     }
+
+    @Override
+    public ResponseData getVoucherListByShop(Long shopId) {
+        //暂时使用数据库查询
+        List<Voucher> voucherList = voucherMapper.getVoucherListByShop(shopId);
+        return voucherList == null ? ResponseData.getInstance(ExceptionEnums.FAILURE.getCode(), ExceptionEnums.FAILURE.getMessage())
+                : ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage()).setData(voucherList);
+    }
 }

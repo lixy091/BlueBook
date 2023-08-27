@@ -3,6 +3,8 @@ package com.lixy.bluebook.Dao;
 import com.lixy.bluebook.Entity.Voucher;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * @author lixy
  */
@@ -17,4 +19,5 @@ public interface VoucherMapper {
 
     long updateVoucherStockById(Long id);
 
+    List<Voucher> getVoucherListByShop(Long shopId);
 }

@@ -18,6 +18,7 @@ public class ProjectConstant {
     public static final String FOLLOWS = "follows:";
     public static final String FOLLOWS_FEED = "follow:feed:";
     public static final String SHOP_GEO = "shop:geo:";
+    public static final String COMMENT_SHOP = "comment:shop:";
     public static final int PAGE_SIZE = 6;
     public static final String IMAGE_DIR = "D:\\IntelliJ IDEA 2023.1.2\\WorkSpace\\BlueBook\\nginx-1.18.0\\html\\bluebook\\imgs";
 

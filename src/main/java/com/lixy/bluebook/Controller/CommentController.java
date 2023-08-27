@@ -1,5 +1,6 @@
 package com.lixy.bluebook.Controller;
 
+import com.lixy.bluebook.Entity.Comment;
 import com.lixy.bluebook.Service.CommentService;
 import com.lixy.bluebook.Utils.ResponseData;
 import io.swagger.annotations.Api;
@@ -26,8 +27,7 @@ public class CommentController {
             @ApiParam(value = "blogId" , name = "博客id" , required = true)
             @PathVariable("id") long blogId
     ){
-        //TODO
-        return null;
+        return commentService.getCommentsByBlog(blogId);
     }
 
     @ApiOperation("根据一级评论获取评论")
@@ -36,8 +36,7 @@ public class CommentController {
             @ApiParam(value = "comId" , name = "一级评论id" , required = true)
             @PathVariable("id") long comId
     ){
-        //TODO
-        return null;
+        return commentService.getCommentsByFC(comId);
     }
 
     @ApiOperation("获取自身评论")
@@ -55,6 +54,15 @@ public class CommentController {
     ){
         //TODO
         return null;
+    }
+
+    @ApiOperation("发评论")
+    @PostMapping("/comment")
+    public ResponseData postComment(
+            @ApiParam(value = "comment" , name = "评论", required = true)
+            @RequestBody Comment comment
+            ){
+        return commentService.postComment(comment);
     }
 
 }

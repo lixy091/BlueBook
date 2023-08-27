@@ -102,9 +102,9 @@ public class BlogController {
     @ApiOperation("关注列表的博客")
     @GetMapping("/ofFollow")
     public ResponseData getBlogsOfFollow(
-            @ApiParam(value = "" ,name = "",required = true)
+            @ApiParam(value = "max" ,name = "上次查询的最后一篇blog的id",required = true)
             @RequestParam("lastId") long max,
-            @ApiParam(value = "" , name = "" )
+            @ApiParam(value = "offset" , name = "偏移值" )
             @RequestParam(value = "offset" , defaultValue = "0") Integer offset
     ){
         return blogService.getBlogsOfFollow(max , offset);

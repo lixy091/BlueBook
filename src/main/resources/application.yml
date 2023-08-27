@@ -20,6 +20,8 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  profiles:
+    active: home
 
 mybatis:
   type-aliases-package: com.lixy.bluebook.Entity , com.lixy.bluebook.DTO

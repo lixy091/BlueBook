@@ -1,5 +1,6 @@
 package com.lixy.bluebook.Entity;
 
+import jdk.jfr.Unsigned;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ public class Comment {
     /**
      * 主键
      */
+    @Unsigned
     private Long id;
 
     /**

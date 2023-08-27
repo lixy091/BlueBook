@@ -15,4 +15,6 @@ public interface VoucherService {
     ResponseData buyVoucher(Long id);
 
     ResponseData buySecKillVoucher(Long id);
+
+    ResponseData getVoucherListByShop(Long shopId);
 }
