@@ -12,6 +12,9 @@ import com.lixy.bluebook.Utils.ResponseData;
 import com.lixy.bluebook.Utils.UserLocal;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RedissonClient;
+import org.springframework.amqp.rabbit.annotation.Queue;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.connection.stream.*;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -25,7 +28,9 @@ import javax.annotation.Resource;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -50,6 +55,8 @@ public class VoucherServiceImpl implements VoucherService {
     private RedissonClient redissonClient;
     @Resource
     private StringRedisTemplate stringRedisTemplate;
+    @Resource
+    private RabbitTemplate rabbitTemplate;
 
     private static final DefaultRedisScript<Long> SEC_KILL_SCRIPT;
     static {
@@ -62,49 +69,56 @@ public class VoucherServiceImpl implements VoucherService {
 
     private static final ThreadPoolExecutor BUY_THREAD_POOL = new ThreadPoolExecutor(1,2,10, TimeUnit.MILLISECONDS,new ArrayBlockingQueue<>(1024));
 
-    @PostConstruct
-    @Transactional(rollbackFor = Throwable.class)
-    public void executeKill(){
-        BUY_THREAD_POOL.submit(() -> {
-            String streamName = "stream.orders";
-            while (true){
-                try {
+//    @PostConstruct
+//    @Transactional(rollbackFor = Throwable.class)
+//    public void executeKill(){
+//        BUY_THREAD_POOL.submit(() -> {
+//            String streamName = "stream.orders";
+//            while (true){
+//                try {
+//
+//                    List<MapRecord<String, Object, Object>> messageList = stringRedisTemplate.opsForStream().read(
+//                            Consumer.from("g1", "c1")
+//                            , StreamReadOptions.empty().count(1).block(Duration.ofSeconds(5))
+//                            , StreamOffset.create(streamName, ReadOffset.lastConsumed()));
+//                    if (messageList == null || messageList.size() == 0){
+//                        Thread.sleep(10000);
+//                        continue;
+//                    }
+//                    MapRecord<String, Object, Object> record = messageList.get(0);
+//                    VoucherOrder order = BeanUtil.fillBeanWithMap(record.getValue(), new VoucherOrder(), true);
+//                    voucherMapper.updateVoucherStockById(order.getVoucherId());
+//                    orderMapper.createVoucherOrder(order);
+//                    stringRedisTemplate.opsForStream().acknowledge(streamName , "g1" ,record.getId());
+//                }catch (Exception e){
+//                    try {
+//                        log.error("执行错误",e);
+//                        List<MapRecord<String, Object, Object>> messageList = stringRedisTemplate.opsForStream().read(
+//                                Consumer.from("g1", "c1")
+//                                , StreamReadOptions.empty().count(1).block(Duration.ofSeconds(5))
+//                                , StreamOffset.create(streamName, ReadOffset.from("0")));
+//                        if (messageList == null || messageList.size() == 0){
+//                            break;
+//                        }
+//                        MapRecord<String, Object, Object> record = messageList.get(0);
+//                        VoucherOrder order = BeanUtil.fillBeanWithMap(record.getValue(), new VoucherOrder(), true);
+//                        voucherMapper.updateVoucherStockById(order.getVoucherId());
+//                        orderMapper.createVoucherOrder(order);
+//                        stringRedisTemplate.opsForStream().acknowledge(streamName , "g1" ,record.getId());
+//                    }catch (Exception exception){
+//                        log.error("pending-list执行异常" , exception);
+//                    }
+//
+//                }
+//            }
+//        });
+//    }
 
-                    List<MapRecord<String, Object, Object>> messageList = stringRedisTemplate.opsForStream().read(
-                            Consumer.from("g1", "c1")
-                            , StreamReadOptions.empty().count(1).block(Duration.ofSeconds(5))
-                            , StreamOffset.create(streamName, ReadOffset.lastConsumed()));
-                    if (messageList == null || messageList.size() == 0){
-                        Thread.sleep(10000);
-                        continue;
-                    }
-                    MapRecord<String, Object, Object> record = messageList.get(0);
-                    VoucherOrder order = BeanUtil.fillBeanWithMap(record.getValue(), new VoucherOrder(), true);
-                    voucherMapper.updateVoucherStockById(order.getVoucherId());
-                    orderMapper.createVoucherOrder(order);
-                    stringRedisTemplate.opsForStream().acknowledge(streamName , "g1" ,record.getId());
-                }catch (Exception e){
-                    try {
-                        log.error("执行错误",e);
-                        List<MapRecord<String, Object, Object>> messageList = stringRedisTemplate.opsForStream().read(
-                                Consumer.from("g1", "c1")
-                                , StreamReadOptions.empty().count(1).block(Duration.ofSeconds(5))
-                                , StreamOffset.create(streamName, ReadOffset.from("0")));
-                        if (messageList == null || messageList.size() == 0){
-                            break;
-                        }
-                        MapRecord<String, Object, Object> record = messageList.get(0);
-                        VoucherOrder order = BeanUtil.fillBeanWithMap(record.getValue(), new VoucherOrder(), true);
-                        voucherMapper.updateVoucherStockById(order.getVoucherId());
-                        orderMapper.createVoucherOrder(order);
-                        stringRedisTemplate.opsForStream().acknowledge(streamName , "g1" ,record.getId());
-                    }catch (Exception exception){
-                        log.error("pending-list执行异常" , exception);
-                    }
-
-                }
-            }
-        });
+    @RabbitListener(queuesToDeclare = @Queue("order.kill"))
+    public void execMessage(Map<String,Long> killMap){
+        VoucherOrder order = BeanUtil.fillBeanWithMap(killMap, new VoucherOrder(), true);
+        voucherMapper.updateVoucherStockById(order.getVoucherId());
+        orderMapper.createVoucherOrder(order);
     }
     @Override
     public ResponseData addVoucher(Voucher voucher) {
@@ -146,9 +160,16 @@ public class VoucherServiceImpl implements VoucherService {
     public ResponseData buySecKillVoucher(Long id) {
         Long userId = UserLocal.getUserDTO().getId();
         long orderId = idGenerator.generateIncrId(ORDER+id);
-        Long res = stringRedisTemplate.execute(SEC_KILL_SCRIPT, Collections.emptyList(), id.toString(), userId.toString() , String.valueOf(orderId));
+        Long res = stringRedisTemplate.execute(SEC_KILL_SCRIPT, Collections.emptyList(), id.toString(), userId.toString());
         if (res != 0L){
             return ResponseData.getInstance(ExceptionEnums.FAILURE.getCode(), ExceptionEnums.FAILURE.getMessage()+ (res == 1L ? "库存不足" : "不可重复下单"));
+        } else {
+            String queueName = "order.kill";
+            Map<String , Long> killMap = new HashMap<>();
+            killMap.put("id" , orderId);
+            killMap.put("userId" , userId);
+            killMap.put("voucherId" , id);
+            rabbitTemplate.convertAndSend(queueName , killMap);
         }
 
         return ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage()).setData(id);

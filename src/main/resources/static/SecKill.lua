@@ -14,5 +14,5 @@ redis.call("incrby" , stockKey ,-1)
 --将用户加入订单列表中
 redis.call("sadd" , orderKey , ARGV[2])
 --添加信息到消息队列
-redis.call("xadd" , "stream.orders" , "*", "voucherId" , ARGV[1] , "userId" , ARGV[2] , "id" , ARGV[3])
+--redis.call("xadd" , "stream.orders" , "*", "voucherId" , ARGV[1] , "userId" , ARGV[2] , "id" , ARGV[3])
 return 0
