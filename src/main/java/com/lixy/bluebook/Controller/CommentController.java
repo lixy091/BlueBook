@@ -22,19 +22,19 @@ public class CommentController {
     private CommentService commentService;
 
     @ApiOperation("根据博客获取评论")
-    @GetMapping("/blog/{id}")
+    @GetMapping("blog/{blogId}")
     public ResponseData getCommentsByBlog(
-            @ApiParam(value = "blogId" , name = "博客id" , required = true)
-            @PathVariable("id") long blogId
+            @ApiParam(value = "博客id" , name = "blogId" , required = true)
+            @PathVariable("blogId") long blogId
     ){
         return commentService.getCommentsByBlog(blogId);
     }
 
     @ApiOperation("根据一级评论获取评论")
-    @GetMapping("/com/{id}")
+    @GetMapping("/com/{comId}")
     public ResponseData getCommentsByFC(
-            @ApiParam(value = "comId" , name = "一级评论id" , required = true)
-            @PathVariable("id") long comId
+            @ApiParam(value = "一级评论id" , name = "comId" , required = true)
+            @PathVariable("comId") long comId
     ){
         return commentService.getCommentsByFC(comId);
     }
@@ -42,24 +42,22 @@ public class CommentController {
     @ApiOperation("获取自身评论")
     @GetMapping("/mine")
     public ResponseData getMyComments(){
-        //TODO
-        return null;
+        return commentService.getMyComments();
     }
 
     @ApiOperation("删除评论")
-    @DeleteMapping("/del/{id}")
+    @DeleteMapping("/del/{comId}")
     public ResponseData deleteCommentById(
-            @ApiParam(value = "comId" , name = "评论id" , required = true)
-            @PathVariable("id") long comId
+            @ApiParam(value = "评论id" , name = "comId" , required = true)
+            @PathVariable("comId") long comId
     ){
-        //TODO
-        return null;
+        return commentService.deleteCommentById(comId);
     }
 
     @ApiOperation("发评论")
     @PostMapping("/comment")
     public ResponseData postComment(
-            @ApiParam(value = "comment" , name = "评论", required = true)
+            @ApiParam(value = "评论" , name = "comment", required = true)
             @RequestBody Comment comment
             ){
         return commentService.postComment(comment);

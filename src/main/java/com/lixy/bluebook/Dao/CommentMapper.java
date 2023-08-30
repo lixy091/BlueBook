@@ -19,4 +19,8 @@ public interface CommentMapper {
 
     List<Comment> getCommentsByFC(long comId);
 
+    List<Comment> getCommentsByUserId(long userId);
+
+    long deleteCommentById(long id);
+
 }

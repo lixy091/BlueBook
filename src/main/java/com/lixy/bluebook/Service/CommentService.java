@@ -12,4 +12,8 @@ public interface CommentService {
     ResponseData postComment(Comment comment);
 
     ResponseData getCommentsByFC(long comId);
+
+    ResponseData getMyComments();
+
+    ResponseData deleteCommentById(long comId);
 }

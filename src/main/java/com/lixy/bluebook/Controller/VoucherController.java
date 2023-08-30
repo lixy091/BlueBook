@@ -60,7 +60,7 @@ public class VoucherController {
     @ApiOperation("获取店铺优惠券列表")
     @GetMapping("list/{shopId}")
     public ResponseData getVoucherListByShop(
-            @ApiParam(value = "" , name = "" , required = true)
+            @ApiParam(value = "店铺id" , name = "shopId" , required = true)
             @PathVariable("shopId") Long shopId
     ){
         return voucherService.getVoucherListByShop(shopId);

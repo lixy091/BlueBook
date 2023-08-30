@@ -1,10 +1,12 @@
 package com.lixy.bluebook.Service.Impl;
 
+import com.lixy.bluebook.DTO.UserDTO;
 import com.lixy.bluebook.Dao.CommentMapper;
 import com.lixy.bluebook.Entity.Comment;
 import com.lixy.bluebook.Service.CommentService;
 import com.lixy.bluebook.Utils.ExceptionEnums;
 import com.lixy.bluebook.Utils.ResponseData;
+import com.lixy.bluebook.Utils.UserLocal;
 import jdk.jfr.Unsigned;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import javax.annotation.Resource;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -36,7 +39,7 @@ public class CommentServiceImpl implements CommentService {
         String key = COMMENT_SHOP+blogId;
         Set<String> members = stringRedisTemplate.opsForSet().members(key);
         //如果redis中为空则用blogId去查找数据库
-        if (members == null){
+        if (members == null || members.isEmpty()){
             comments = commentMapper.getCommentsByBLog(blogId);
             //若查找到数据库则将id写入redis中
             if (comments != null){
@@ -61,9 +64,17 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public ResponseData getCommentsByFC(long comId) {
         List<Comment> comments = commentMapper.getCommentsByFC(comId);
-        if (comments == null){
-            return ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage()).setData(Collections.emptyList());
-        }
-        return ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage()).setData(comments);
+        return ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage()).setData(Objects.requireNonNullElse(comments, Collections.emptyList()));
+    }
+
+    @Override
+    public ResponseData getMyComments() {
+        List<Comment> comments = commentMapper.getCommentsByUserId(UserLocal.getUserDTO().getId());
+        return ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage()).setData(Objects.requireNonNullElse(comments, Collections.emptyList()));
+    }
+
+    @Override
+    public ResponseData deleteCommentById(long comId) {
+        return ResponseData.getInstance(ExceptionEnums.SUCCESSFUL.getCode(), ExceptionEnums.SUCCESSFUL.getMessage()).setData(commentMapper.deleteCommentById(comId));
     }
 }

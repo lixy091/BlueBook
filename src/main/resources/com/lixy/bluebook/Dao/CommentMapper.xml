@@ -5,6 +5,9 @@
         insert into tb_blog_comments(id, user_id, blog_id, parent_id, answer_id, content, liked, status)
         values (#{id}, #{userId}, #{blogId}, #{parentId}, #{answerId}, #{content}, #{liked}, #{status})
     </insert>
+    <delete id="deleteCommentById">
+        delete from tb_blog_comments where id = #{id}
+    </delete>
 
     <select id="getCommentsByBLog" resultType="com.lixy.bluebook.Entity.Comment">
         select id,
@@ -45,5 +48,10 @@
                update_time
         from tb_blog_comments
         where parent_id = #{comId}
+    </select>
+    <select id="getCommentsByUserId" resultType="com.lixy.bluebook.Entity.Comment">
+        select id, user_id, blog_id, parent_id, answer_id, content, liked, status, create_time, update_time
+        from tb_blog_comments
+        where user_id = #{userId}
     </select>
 </mapper>
